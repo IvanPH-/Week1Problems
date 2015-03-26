@@ -33,8 +33,8 @@ public class P8 {
 		Date timeNow = new Date();
 		System.out.println("Current time is: " + sdf.format(timeNow));
 		System.out.println("You entered: " + sdf.format(timeCompare));
-	
+		long hours = (long)(timeCompare.getTime() - timeNow.getTime()) / (60 * 60 * 1000) % 24;
 		long minutes = (long)(timeCompare.getTime() - timeNow.getTime()) / (60 * 1000) % 60;
-		System.out.println("Difference in minutes: " + minutes);
+		System.out.println("Difference: " + hours + " hours and " + minutes + " minutes");
 	}
 }
