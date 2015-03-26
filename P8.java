@@ -18,7 +18,7 @@ Build a class that prompts a user to input some time in 12 hour format (e.g. 9:0
 
 public class P8 {
 	public static void main(String[] args) throws ParseException {
-		System.out.println("Input a time in the format: YYYY-MM-DD hh-mm am/pm");
+		System.out.println("Input a time in the format: YYYY-MM-DD h:mm am/pm");
 		Scanner input = new Scanner(System.in);
 		String findTime = input.nextLine();
 		getTimeDiff(findTime);
@@ -26,15 +26,13 @@ public class P8 {
 	public static void getTimeDiff(String x) throws ParseException {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm a");
 		Date timeCompare = sdf.parse(x);
-		Calendar c = Calendar.getInstance();
-		c.setTime(timeCompare);
-		c.set(Calendar.YEAR, 2015);
-		timeCompare = c.getTime();
 		Date timeNow = new Date();
 		System.out.println("Current time is: " + sdf.format(timeNow));
 		System.out.println("You entered: " + sdf.format(timeCompare));
-		long hours = (long)(timeCompare.getTime() - timeNow.getTime()) / (60 * 60 * 1000) % 24;
-		long minutes = (long)(timeCompare.getTime() - timeNow.getTime()) / (60 * 1000) % 60;
-		System.out.println("Difference: " + hours + " hours and " + minutes + " minutes");
+		long comparison = (long)(timeCompare.getTime() - timeNow.getTime());
+		long hours = comparison / (60 * 60 * 1000) % 24;
+		long minutes = comparison / (60 * 1000) % 60;
+		long days = comparison / (24 * 60 * 60 * 1000);
+		System.out.println("Difference: " + days + " days, " + hours + " hours and " + minutes + " minutes");
 	}
 }
