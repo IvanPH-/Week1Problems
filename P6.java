@@ -15,7 +15,7 @@ Part 3: If we look at pokernew.txt instead of poker.txt, how many hands does pla
 	 */
 	public static void main(String[] args) {
 		List<Integer> a = new ArrayList<>();
-		a.add(2);
+		a.add(12);
 		a.add(14);
 		a.add(14);
 		a.add(12);
@@ -23,11 +23,11 @@ Part 3: If we look at pokernew.txt instead of poker.txt, how many hands does pla
 		Collections.sort(a);
 		
 		List<Integer> b = new ArrayList<>();
-		b.add(5);
+		b.add(4);
 		b.add(15);
-		b.add(15);
+		b.add(4);
 		b.add(2);
-		b.add(12);
+		b.add(2);
 		Collections.sort(b);
 		boolean[] player1Boolean = new boolean[8];
 		boolean[] player2Boolean = new boolean[8];
@@ -37,27 +37,93 @@ Part 3: If we look at pokernew.txt instead of poker.txt, how many hands does pla
 	public static void compare(List<Integer> x, List<Integer> y, boolean[] a, boolean[] b) {
 		checkPairSeries(x, a);
 		checkPairSeries(y, b);
+		checkOfAKindSeries(x, a);
+		checkOfAKindSeries(y, b);
+		checkStraight(x, a);
+		checkStraight(y, b);
+		checkFullHouse(a);
+		checkFullHouse(b);
 		compareHands(x, y, a, b);
 		//Called after comparing both hands values if neither passes in another method somewhere compareHigh(x, y);
 	}
 	
+	private static void checkFullHouse(boolean[] y) {
+		if (y[0] == true && y[2] == true) {
+			y[0] = false;
+			y[2] = false;
+			y[5] = true;
+		}
+	}
+	
+	private static void checkStraight(List<Integer> x, boolean[] y) {
+		List<Integer> placeHold = x;
+		Collections.sort(x); //Return it to how it was originally before being sorted - Done
+		for(int i = 0; i <= x.size() - 2; i++) {
+			if (x.get(i) + 1 != x.get(i + 1)) {
+				y[3] = false;
+				break;
+			}
+			else {
+				y[3] = true;
+				continue;
+			}
+		}
+		x = placeHold;
+	}
+	
+	private static void checkOfAKindSeries(List<Integer> x, boolean[] y) {
+		List<Integer> placeHold = x;
+		List<Integer> holdRemove = new ArrayList<>();
+		Collections.sort(x); //Return it to how it was originally before being sorted while maintaining the three or four at the end if true
+		boolean threeFlag = false;
+		boolean fourFlag = false;
+		for(int i = 0; i <= x.size() - 2; i++) {
+			if(x.get(i) == x.get(i + 1)) {
+				if(threeFlag == true) {
+					threeFlag = false;
+					fourFlag = true;
+					holdRemove.add(x.get(i));
+					holdRemove.add(x.get(i + 1));
+					holdRemove.add(x.get(i - 1));
+					y[2] = true;
+					continue;
+				}
+				else if(fourFlag == true) {
+					y[2] = false;
+					y[6] = true;
+					continue;
+				}
+				threeFlag = true;
+			}
+		}
+	}
+	
 	private static void checkPairSeries(List<Integer> x, boolean[] y) {
 		List<Integer> hold = new ArrayList<>();
-		for(int i = 0; i <= x.size() - 2; i++) {
+		for(int i = 0; i <= x.size() - 2;) {
 			if(x.get(i) == x.get(i + 1)) {
 				if(y[0] == true) {
 					y[0] = false;
 					y[1] = true;
+					hold.add(x.get(i));
+					hold.add(x.get(i + 1));
+					x.remove(x.get(i));
+					x.remove(x.get(i));
+					i = 0;
+					continue;
 				}
 				hold.add(x.get(i));
 				hold.add(x.get(i + 1));
 				x.remove(x.get(i));
 				x.remove(x.get(i));
 				y[0] = true;
+				i = 0;
+			}
+			else {
+				i++;
 			}
 		}
 		x.addAll(hold);
-		Collections.sort(x);
 		hold.clear();
 	}
 		
