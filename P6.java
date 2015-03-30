@@ -15,18 +15,18 @@ Part 3: If we look at pokernew.txt instead of poker.txt, how many hands does pla
 	 */
 	public static void main(String[] args) {
 		List<Integer> a = new ArrayList<>();
-		a.add(12);
+		a.add(15);
 		a.add(14);
 		a.add(14);
-		a.add(12);
-		a.add(8);
+		a.add(14);
+		a.add(14);
 		Collections.sort(a);
 		
 		List<Integer> b = new ArrayList<>();
-		b.add(4);
+		b.add(12);
 		b.add(15);
-		b.add(4);
-		b.add(2);
+		b.add(15);
+		b.add(15);
 		b.add(2);
 		Collections.sort(b);
 		boolean[] player1Boolean = new boolean[8];
@@ -56,7 +56,7 @@ Part 3: If we look at pokernew.txt instead of poker.txt, how many hands does pla
 	}
 	
 	private static void checkStraight(List<Integer> x, boolean[] y) {
-		List<Integer> placeHold = x;
+		List<Integer> placeHold = new ArrayList<>(x);
 		Collections.sort(x); //Return it to how it was originally before being sorted - Done
 		for(int i = 0; i <= x.size() - 2; i++) {
 			if (x.get(i) + 1 != x.get(i + 1)) {
@@ -72,9 +72,9 @@ Part 3: If we look at pokernew.txt instead of poker.txt, how many hands does pla
 	}
 	
 	private static void checkOfAKindSeries(List<Integer> x, boolean[] y) {
-		List<Integer> placeHold = x;
+		List<Integer> placeHold = new ArrayList<>(x);
 		List<Integer> holdRemove = new ArrayList<>();
-		Collections.sort(x); //Return it to how it was originally before being sorted while maintaining the three or four at the end if true
+		Collections.sort(x); //Return it to how it was originally before being sorted if none are ture. Otherwise maintain the three or four at the end if true - Not done
 		boolean threeFlag = false;
 		boolean fourFlag = false;
 		for(int i = 0; i <= x.size() - 2; i++) {
@@ -89,13 +89,40 @@ Part 3: If we look at pokernew.txt instead of poker.txt, how many hands does pla
 					continue;
 				}
 				else if(fourFlag == true) {
+					holdRemove.add(x.get(i + 1));
 					y[2] = false;
 					y[6] = true;
-					continue;
+					break;
 				}
 				threeFlag = true;
 			}
 		}
+		threeFlag = false;
+		
+		if(y[2] == true || y[6] == true) {
+			y[0] = false;
+			y[1] = false;
+		}
+		
+		if(fourFlag != true) {
+			x = placeHold;
+		}
+		else if(fourFlag == true) {
+			//run code to remove the matches from x, and place them at the end
+			repairComparison(x, holdRemove);
+		}
+	}
+	
+	private static void repairComparison(List<Integer> x, List<Integer> y) {
+		for(int i = 0; i <= x.size() - 1; i++) {
+			for(int j = 0; j <= x.size() - 1; j++) {
+				if(y.get(i) == x.get(j)) {
+					x.remove(j);
+					j = 0;
+				}
+			}
+		}
+		x.addAll(y);
 	}
 	
 	private static void checkPairSeries(List<Integer> x, boolean[] y) {
