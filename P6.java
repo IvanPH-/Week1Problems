@@ -1,6 +1,13 @@
 package week1Problems;
 
 import java.util.ArrayList;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -15,29 +22,146 @@ Part 3: If we look at pokernew.txt instead of poker.txt, how many hands does pla
 	 */
 	
 	//Add a check for flush
-	public static void main(String[] args) {
-		List<Integer> a = new ArrayList<>();
-		a.add(15);
-		a.add(15);
-		a.add(14);
-		a.add(14);
-		a.add(14);
-		Collections.sort(a);
+	public static void main(String[] args) throws IOException {
+		// Open the file
+		FileInputStream fstream = new FileInputStream("src/week1Problems/poker.txt");
+		BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
+
+		String strLine;
+
+		//Read File Line By Line
+		while ((strLine = br.readLine()) != null)   {
+		  // Print the content on the console
+		  runHandConstructor(strLine);
+		}
+		//Close the input stream
+		br.close();
+	}
 		
-		List<Integer> b = new ArrayList<>();
-		b.add(12);
-		b.add(15);
-		b.add(15);
-		b.add(15);
-		b.add(12);
-		Collections.sort(b);
+	private static void runHandConstructor(String x) {
+			List<String> dataArray = new ArrayList<>();
+			List<String> dataArray2 = new ArrayList<>();
+			dataConstructor(x, dataArray, dataArray2);
+			String listToString = charArrayPrep(dataArray);
+			String listToString2 = charArrayPrep(dataArray2);
+			char[] playerHand1 = listToString.toCharArray();
+			char[] playerHand2 = listToString2.toCharArray();
+			List<Character> play1 = new ArrayList<>();
+			List<Character> play2 = new ArrayList<>();
+			constructPlayerList(play1, playerHand1);
+			constructPlayerList(play2, playerHand2);
+			runPoker(play1, play2);
+		}
+	
+	private static void constructPlayerList(List<Character> x, char[] y) {
+		for(int i = 0; i <= y.length - 1; i++) {
+			x.add(y[i]);
+		}
+		
+	}
+
+	private static String charArrayPrep(List<String> x) {
+		String toReturn = "";
+		for(int i = 0; i <= x.size() - 1; i++) {
+			 toReturn += x.get(i);
+			}
+		return toReturn;
+	}
+	
+	private static void dataConstructor(String x, List<String> y, List<String> z) {
+		boolean hand2 = false;
+		String[] placeHold = x.split(" ");
+		if(hand2 == false) {
+			for(int i = 0; i <= 4; i++) {
+				y.add(placeHold[i]);
+			}
+			hand2 = true;
+			}
+		if (hand2 == true) {
+			for(int i = 5; i <= placeHold.length - 1; i++) {
+				z.add(placeHold[i]);
+			}
+			hand2 = false;
+		}
+	}
+	
+	private static void runPoker(List<Character> x, List<Character> y) {
 		boolean[] player1Boolean = new boolean[8];
 		boolean[] player2Boolean = new boolean[8];
-		//checkFlush(a, player1Boolean);
-		//CheckFlush(b, player2Boolean);
+		List<Integer> a = cleanHands(player1Boolean, x);
+		List<Integer> b = cleanHands(player2Boolean, y);
+		Collections.sort(a);
+		Collections.sort(b);
 		compare(a, b, player1Boolean, player2Boolean);
 	}
 	
+	private static List<Integer> cleanHands(boolean[] y, List<Character> z) {
+		List<Character> flushFinder = new ArrayList<>();
+		char toAdd = 0;
+		for(int i = 0; i <= z.size() - 1; i++) {
+			switch(z.get(i)) {
+				case 'T':
+					toAdd = (int) 10;
+					z.remove(i);
+					z.add(toAdd);
+					i = 0;
+					break;
+				case 'J':
+					toAdd = (int) 11;
+					z.remove(i);
+					z.add(toAdd);
+					i = 0;
+					break;
+				case 'Q':
+					toAdd = (int) 12;
+					z.remove(i);
+					z.add(toAdd);
+					i = 0;
+					break;
+				case 'K':
+					toAdd = (int) 13;
+					z.remove(i);
+					z.add(toAdd);
+					i = 0;
+					break;
+				case 'A':
+					toAdd = (int) 14;
+					z.remove(i);
+					z.add(toAdd);
+					i = 0;
+					break;
+			}
+			
+			if(z.get(i) == 'C' || z.get(i) == 'H' || z.get(i) == 'D' || z.get(i) == 'S') {
+				flushFinder.add(z.get(i));
+				z.remove(i);
+				i = 0;
+			}
+		}
+		findFlush(flushFinder, y);
+		//Another method here
+		List<Integer> toReturn = remainingCharsToInt(z);
+		return toReturn;
+	}
+
+	private static List<Integer> remainingCharsToInt(List<Character> x) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private static void findFlush(List<Character> x, boolean[] y) {
+		for(int i = 0; i <= x.size() - 2; i++) {
+			if(x.get(i) == x.get(i + 1)) {
+				y[4] = true;
+			}
+			else {
+				y[4] = false;
+				break;
+			}
+		}
+		
+	}
+
 	public static void compare(List<Integer> x, List<Integer> y, boolean[] a, boolean[] b) {
 		checkOfAKindSeries(x, a);
 		checkOfAKindSeries(y, b); 
@@ -127,7 +251,7 @@ Part 3: If we look at pokernew.txt instead of poker.txt, how many hands does pla
 					y[2] = true;
 					continue;
 				}
-				else if(fourFlag == true) { //Its messing up between the last digit of three of a kind and first digit of the pair and flagging four of a kind
+				else if(fourFlag == true) {
 					holdRemove.add(x.get(i + 1));
 					y[2] = false;
 					y[6] = true;
@@ -220,20 +344,25 @@ Part 3: If we look at pokernew.txt instead of poker.txt, how many hands does pla
 	private static void compareHigh(List<Integer> x, List<Integer> y) {
 		int player1High = findHighCard(x);
 		int player2High = findHighCard(y);
+		int player1WinCount = 0;
+		int player2WinCount = 0;
 		if (player1High > player2High) {
+			player1WinCount++;
 			System.out.print("Player 1 wins");
 		}
 		else if (player1High == player2High) {
-			compareNextHigh(x, y);
+			compareNextHigh(x, y, player1WinCount, player2WinCount);
 		}
 		else {
+			player2WinCount++;
 			System.out.print("Player 2 wins");
 		}
 	}
 
-	private static void compareNextHigh(List<Integer> x, List<Integer> y) {
+	private static void compareNextHigh(List<Integer> x, List<Integer> y, int player1WinCount, int player2WinCount) {
 		for(int i = x.size() - 2; i >= 0; i--) {
 			if (x.get(i) > y.get(i)) {
+				player1WinCount++;
 				System.out.print("Player 1 wins");
 				break;
 			}
@@ -241,6 +370,7 @@ Part 3: If we look at pokernew.txt instead of poker.txt, how many hands does pla
 				continue;
 			}
 			else {
+				player2WinCount++;
 				System.out.print("Player 2 wins");
 				break;
 			}
