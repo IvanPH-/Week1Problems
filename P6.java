@@ -97,41 +97,7 @@ Part 3: If we look at pokernew.txt instead of poker.txt, how many hands does pla
 	
 	private static List<Integer> cleanHands(boolean[] y, List<Character> z) {
 		List<Character> flushFinder = new ArrayList<>();
-		char toAdd = 0;
 		for(int i = 0; i <= z.size() - 1; i++) {
-			switch(z.get(i)) {
-				case 'T':
-					toAdd = (int) 10;
-					z.remove(i);
-					z.add(toAdd);
-					i = 0;
-					break;
-				case 'J':
-					toAdd = (int) 11;
-					z.remove(i);
-					z.add(toAdd);
-					i = 0;
-					break;
-				case 'Q':
-					toAdd = (int) 12;
-					z.remove(i);
-					z.add(toAdd);
-					i = 0;
-					break;
-				case 'K':
-					toAdd = (int) 13;
-					z.remove(i);
-					z.add(toAdd);
-					i = 0;
-					break;
-				case 'A':
-					toAdd = (int) 14;
-					z.remove(i);
-					z.add(toAdd);
-					i = 0;
-					break;
-			}
-			
 			if(z.get(i) == 'C' || z.get(i) == 'H' || z.get(i) == 'D' || z.get(i) == 'S') {
 				flushFinder.add(z.get(i));
 				z.remove(i);
@@ -145,8 +111,37 @@ Part 3: If we look at pokernew.txt instead of poker.txt, how many hands does pla
 	}
 
 	private static List<Integer> remainingCharsToInt(List<Character> x) {
-		// TODO Auto-generated method stub
+		List<Integer> toReturn = new ArrayList<>();
+		List<String> newList = new ArrayList<>();
 		
+		for(int i = 0; i <= x.size() - 1; i++){
+			newList.add(String.valueOf(x.get(i)));
+			switch(newList.get(i)) {
+				case "T":
+						newList.remove(i);
+						newList.add("10");
+						break;
+					case "J":
+						newList.remove(i);
+						newList.add("11");
+						break;
+					case "Q":
+						newList.remove(i);
+						newList.add("12");
+						break;
+					case "K":
+						newList.remove(i);
+						newList.add("13");
+						break;
+					case "A":
+						newList.remove(i);
+						newList.add("14");
+						break;
+				}
+			toReturn.add(Integer.parseInt(newList.get(i)));
+		}
+		
+		return toReturn;
 	}
 
 	private static void findFlush(List<Character> x, boolean[] y) {
@@ -175,17 +170,17 @@ Part 3: If we look at pokernew.txt instead of poker.txt, how many hands does pla
 	}
 	
 	private static void checkToCheckStraight(List<Integer> x, boolean[] y) {
-		boolean flagToCheck = false;
+		boolean flagToCheck = true;
 		for(int i = 0; i <= y.length - 1; i++) {
 			if(i == 4) {
 				continue;
 			}
 			else if(y[i] == true) {
-				flagToCheck = true;
+				flagToCheck = false;
 				break;
 			}
 		}
-		if (flagToCheck == false) {
+		if (flagToCheck == true) {
 			checkStraight(x, y);
 		}
 	}
@@ -348,14 +343,14 @@ Part 3: If we look at pokernew.txt instead of poker.txt, how many hands does pla
 		int player2WinCount = 0;
 		if (player1High > player2High) {
 			player1WinCount++;
-			System.out.print("Player 1 wins");
+			System.out.println("Player 1 wins");
 		}
 		else if (player1High == player2High) {
 			compareNextHigh(x, y, player1WinCount, player2WinCount);
 		}
 		else {
 			player2WinCount++;
-			System.out.print("Player 2 wins");
+			System.out.println("Player 2 wins");
 		}
 	}
 
@@ -363,7 +358,7 @@ Part 3: If we look at pokernew.txt instead of poker.txt, how many hands does pla
 		for(int i = x.size() - 2; i >= 0; i--) {
 			if (x.get(i) > y.get(i)) {
 				player1WinCount++;
-				System.out.print("Player 1 wins");
+				System.out.println("Player 1 wins");
 				break;
 			}
 			else if (x.get(i) == y.get(i)) {
@@ -371,7 +366,7 @@ Part 3: If we look at pokernew.txt instead of poker.txt, how many hands does pla
 			}
 			else {
 				player2WinCount++;
-				System.out.print("Player 2 wins");
+				System.out.println("Player 2 wins");
 				break;
 			}
 		}
@@ -387,13 +382,13 @@ Part 3: If we look at pokernew.txt instead of poker.txt, how many hands does pla
 		int buildValue1 = findValue(a);
 		int buildValue2 = findValue(b);
 		if(buildValue1 > buildValue2) {
-			System.out.print("Player 1 wins");
+			System.out.println("Player 1 wins");
 		}
 		else if(buildValue1 == buildValue2) {
 			compareHigh(x, y);
 		}
 		else {
-			System.out.print("Player 2 wins");
+			System.out.println("Player 2 wins");
 		}
 	}
 	
