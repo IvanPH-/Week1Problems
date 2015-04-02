@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Scanner;
 
 public class P6 {
 	static int wins = 0;
@@ -24,25 +25,53 @@ Part 3: If we look at pokernew.txt instead of poker.txt, how many hands does pla
 	
 	//Add a check for flush
 	public static void main(String[] args) throws IOException {
+		poker();
+	}
+	
+	protected static void poker() throws IOException {
+		
+		System.out.println("Are 2 players playing, or 3?");
+		Scanner input = new Scanner(System.in);
+		int x = input.nextInt();
+		boolean threePlayers = declaration(x);
+		execution(threePlayers);
+	}
+		
+	protected static void execution(boolean x) throws IOException {
 		// Open the file
 		FileInputStream fstream = new FileInputStream("src/week1Problems/poker.txt");
 		BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
-
-		String strLine;
 		
+		String strLine;
 
 		//Read File Line By Line
 		while ((strLine = br.readLine()) != null)   {
 		  // Print the content on the console
-		  runHandConstructor(strLine);
+		  runHandConstructor(strLine, x);
 		}
 		//Close the input stream
 		br.close();
 		
 		System.out.print("Player 1 has won: " + wins + " games");
 	}
-		
-	private static void runHandConstructor(String x) {
+
+	protected static boolean declaration(int x) {
+		boolean y = false;
+		if(x == 2) {
+			y = false;
+		}
+		else if(x == 3) {
+			y = true;
+		}
+		else {
+			System.err.println("Please input either 2 or 3");
+			System.exit(0);
+		}
+		return y;
+	
+	}
+
+	protected static void runHandConstructor(String x, boolean y) {
 			List<String> dataArray = new ArrayList<>();
 			List<String> dataArray2 = new ArrayList<>();
 			dataConstructor(x, dataArray, dataArray2);
@@ -54,17 +83,27 @@ Part 3: If we look at pokernew.txt instead of poker.txt, how many hands does pla
 			List<Character> play2 = new ArrayList<>();
 			constructPlayerList(play1, playerHand1);
 			constructPlayerList(play2, playerHand2);
-			runPoker(play1, play2);
-		}
+			if(y == true) {
+				List<String> dataArray3 = P6Player3.cardConstructor(dataArray, dataArray2);
+				String listToString3 = charArrayPrep(dataArray3);
+				char[] playerHand3 = listToString3.toCharArray();
+				List<Character> play3 = new ArrayList<>();
+				constructPlayerList(play3, playerHand3);
+				P6Player3.runPoker(play1, play2, play3);
+			}
+			else {
+				runPoker(play1, play2);
+			}
+	}
 	
-	private static void constructPlayerList(List<Character> x, char[] y) {
+	protected static void constructPlayerList(List<Character> x, char[] y) {
 		for(int i = 0; i <= y.length - 1; i++) {
 			x.add(y[i]);
 		}
 		
 	}
 
-	private static String charArrayPrep(List<String> x) {
+	protected static String charArrayPrep(List<String> x) {
 		String toReturn = "";
 		for(int i = 0; i <= x.size() - 1; i++) {
 			 toReturn += x.get(i);
@@ -72,7 +111,7 @@ Part 3: If we look at pokernew.txt instead of poker.txt, how many hands does pla
 		return toReturn;
 	}
 	
-	private static void dataConstructor(String x, List<String> y, List<String> z) {
+	protected static void dataConstructor(String x, List<String> y, List<String> z) {
 		boolean hand2 = false;
 		String[] placeHold = x.split(" ");
 		if(hand2 == false) {
@@ -89,7 +128,7 @@ Part 3: If we look at pokernew.txt instead of poker.txt, how many hands does pla
 		}
 	}
 	
-	private static void runPoker(List<Character> x, List<Character> y) {
+	protected static void runPoker(List<Character> x, List<Character> y) {
 		boolean[] player1Boolean = new boolean[8];
 		boolean[] player2Boolean = new boolean[8];
 		List<Integer> a = cleanHands(player1Boolean, x);
@@ -99,7 +138,7 @@ Part 3: If we look at pokernew.txt instead of poker.txt, how many hands does pla
 		compare(a, b, player1Boolean, player2Boolean);
 	}
 	
-	private static List<Integer> cleanHands(boolean[] y, List<Character> z) {
+	protected static List<Integer> cleanHands(boolean[] y, List<Character> z) {
 		List<Character> flushFinder = new ArrayList<>();
 		for(int i = 0; i <= z.size() - 1; i++) {
 			if(z.get(i) == 'C' || z.get(i) == 'H' || z.get(i) == 'D' || z.get(i) == 'S') {
@@ -114,7 +153,7 @@ Part 3: If we look at pokernew.txt instead of poker.txt, how many hands does pla
 		return toReturn;
 	}
 
-	private static List<Integer> remainingCharsToInt(List<Character> x) {
+	protected static List<Integer> remainingCharsToInt(List<Character> x) {
 		List<Integer> toReturn = new ArrayList<>();
 		List<String> newList = new ArrayList<>();
 		
@@ -148,7 +187,7 @@ Part 3: If we look at pokernew.txt instead of poker.txt, how many hands does pla
 		return toReturn;
 	}
 
-	private static void findFlush(List<Character> x, boolean[] y) {
+	protected static void findFlush(List<Character> x, boolean[] y) {
 		for(int i = 0; i <= x.size() - 2; i++) {
 			if(x.get(i) == x.get(i + 1)) {
 				y[4] = true;
@@ -173,7 +212,7 @@ Part 3: If we look at pokernew.txt instead of poker.txt, how many hands does pla
 		compareHands(x, y, a, b);
 	}
 	
-	private static void checkToCheckStraight(List<Integer> x, boolean[] y) {
+	protected static void checkToCheckStraight(List<Integer> x, boolean[] y) {
 		boolean flagToCheck = true;
 		for(int i = 0; i <= y.length - 1; i++) {
 			if(i == 4) {
@@ -189,13 +228,13 @@ Part 3: If we look at pokernew.txt instead of poker.txt, how many hands does pla
 		}
 	}
 	
-	private static void checkToCheckPair(List<Integer> x, boolean[] y) {
+	protected static void checkToCheckPair(List<Integer> x, boolean[] y) {
 		if (y[2] != true && y[5] != true && y[6] != true) {
 			checkPairSeries(x, y);
 		}
 	}
 	
-	private static void checkStraightFlushSeries(boolean[] y) {
+	protected static void checkStraightFlushSeries(boolean[] y) {
 		if(y[3] == true && y[4] == true) {
 			y[3] = false;
 			y[4] = false;
@@ -203,7 +242,7 @@ Part 3: If we look at pokernew.txt instead of poker.txt, how many hands does pla
 		}
 	}
 	
-	private static void checkFullHouse(boolean[] y) {
+	protected static void checkFullHouse(boolean[] y) {
 		if (y[0] == true && y[2] == true) {
 			y[0] = false;
 			y[2] = false;
@@ -211,7 +250,7 @@ Part 3: If we look at pokernew.txt instead of poker.txt, how many hands does pla
 		}
 	}
 	
-	private static void checkStraight(List<Integer> x, boolean[] y) {
+	protected static void checkStraight(List<Integer> x, boolean[] y) {
 		List<Integer> placeHold = new ArrayList<>(x);
 		Collections.sort(x); //Return it to how it was originally before being sorted - Done
 		for(int i = 0; i <= x.size() - 2; i++) {
@@ -232,7 +271,7 @@ Part 3: If we look at pokernew.txt instead of poker.txt, how many hands does pla
 		}
 	}
 	
-	private static void checkOfAKindSeries(List<Integer> x, boolean[] y) {
+	protected static void checkOfAKindSeries(List<Integer> x, boolean[] y) {
 		List<Integer> placeHold = new ArrayList<>(x);
 		List<Integer> holdRemove = new ArrayList<>();
 		Collections.sort(x); //Return it to how it was originally before being sorted if none are true. Otherwise maintain the three or four at the end if true - Done
@@ -288,7 +327,7 @@ Part 3: If we look at pokernew.txt instead of poker.txt, how many hands does pla
 		
 	}
 	
-	private static void removeForPairCheck(List<Integer> x, List<Integer> y) {
+	protected static void removeForPairCheck(List<Integer> x, List<Integer> y) {
 		for(int i = 0; i <= x.size() - 1; i++) {
 			for(int j = 0; j <= x.size() - 1; j++) {
 				if(y.get(i) == x.get(j)) {
@@ -299,7 +338,7 @@ Part 3: If we look at pokernew.txt instead of poker.txt, how many hands does pla
 		}
 	}
 	
-	private static void repairComparison(List<Integer> x, List<Integer> y) {
+	protected static void repairComparison(List<Integer> x, List<Integer> y) {
 		for(int i = 0; i <= x.size() - 1; i++) {
 			for(int j = 0; j <= x.size() - 1; j++) {
 				if(y.get(i) == x.get(j)) {
@@ -311,7 +350,7 @@ Part 3: If we look at pokernew.txt instead of poker.txt, how many hands does pla
 		x.addAll(y);
 	}
 	
-	private static void checkPairSeries(List<Integer> x, boolean[] y) {
+	protected static void checkPairSeries(List<Integer> x, boolean[] y) {
 		List<Integer> hold = new ArrayList<>();
 		for(int i = 0; i <= x.size() - 2;) {
 			if(x.get(i) == x.get(i + 1)) {
@@ -340,7 +379,7 @@ Part 3: If we look at pokernew.txt instead of poker.txt, how many hands does pla
 		hold.clear();
 	}
 		
-	private static void compareHigh(List<Integer> x, List<Integer> y) {
+	protected static void compareHigh(List<Integer> x, List<Integer> y) {
 		int player1High = findHighCard(x);
 		int player2High = findHighCard(y);
 		if (player1High > player2High) {
@@ -350,12 +389,9 @@ Part 3: If we look at pokernew.txt instead of poker.txt, how many hands does pla
 		else if (player1High == player2High) {
 			compareNextHigh(x, y);
 		}
-		else {
-			System.out.println("Player 2 wins");
-		}
 	}
 
-	private static void compareNextHigh(List<Integer> x, List<Integer> y) {
+	protected static void compareNextHigh(List<Integer> x, List<Integer> y) {
 		for(int i = x.size() - 2; i >= 0; i--) {
 			if (x.get(i) > y.get(i)) {
 				wins++;
@@ -366,19 +402,18 @@ Part 3: If we look at pokernew.txt instead of poker.txt, how many hands does pla
 				continue;
 			}
 			else {
-				System.out.println("Player 2 wins");
 				break;
 			}
 		}
 		
 	}
 
-	private static int findHighCard(List<Integer> x) {
+	protected static int findHighCard(List<Integer> x) {
 		int highNum = x.size() - 1;
 		return x.get(highNum);
 	}
 
-	private static void compareHands(List<Integer> x, List<Integer> y, boolean[] a, boolean[] b) {
+	protected static void compareHands(List<Integer> x, List<Integer> y, boolean[] a, boolean[] b) {
 		int buildValue1 = findValue(a);
 		int buildValue2 = findValue(b);
 		if(buildValue1 > buildValue2) {
@@ -388,12 +423,9 @@ Part 3: If we look at pokernew.txt instead of poker.txt, how many hands does pla
 		else if(buildValue1 == buildValue2) {
 			compareHigh(x, y);
 		}
-		else {
-			System.out.println("Player 2 wins");
-		}
 	}
 	
-	private static int findValue(boolean[] x) {
+	protected static int findValue(boolean[] x) {
 		int value = 0;
 		for(int i = 0; i <= x.length - 1; i++) {
 			if (x[i] == true) {
