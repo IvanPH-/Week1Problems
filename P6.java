@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class P6 {
+	static int wins = 0;
 	/* ### Poker Hands
 	 * Part 1: The file poker.txt in the resources directory. contains one-thousand random hands dealt to two players. Each line of the file contains ten cards (separated by a single space): the first five are Player 1's cards and the last five are Player 2's cards. You can assume that all hands are valid (no invalid characters or repeated cards), each player's hand is in no specific order, and in each hand there is a clear winner. How many hands does player 1 win? Print the answer to the console and save your class in the answers directory as p6a.java.
 
@@ -28,6 +29,7 @@ Part 3: If we look at pokernew.txt instead of poker.txt, how many hands does pla
 		BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
 
 		String strLine;
+		
 
 		//Read File Line By Line
 		while ((strLine = br.readLine()) != null)   {
@@ -36,6 +38,8 @@ Part 3: If we look at pokernew.txt instead of poker.txt, how many hands does pla
 		}
 		//Close the input stream
 		br.close();
+		
+		System.out.print("Player 1 has won: " + wins + " games");
 	}
 		
 	private static void runHandConstructor(String x) {
@@ -339,25 +343,22 @@ Part 3: If we look at pokernew.txt instead of poker.txt, how many hands does pla
 	private static void compareHigh(List<Integer> x, List<Integer> y) {
 		int player1High = findHighCard(x);
 		int player2High = findHighCard(y);
-		int player1WinCount = 0;
-		int player2WinCount = 0;
 		if (player1High > player2High) {
-			player1WinCount++;
+			wins++;
 			System.out.println("Player 1 wins");
 		}
 		else if (player1High == player2High) {
-			compareNextHigh(x, y, player1WinCount, player2WinCount);
+			compareNextHigh(x, y);
 		}
 		else {
-			player2WinCount++;
 			System.out.println("Player 2 wins");
 		}
 	}
 
-	private static void compareNextHigh(List<Integer> x, List<Integer> y, int player1WinCount, int player2WinCount) {
+	private static void compareNextHigh(List<Integer> x, List<Integer> y) {
 		for(int i = x.size() - 2; i >= 0; i--) {
 			if (x.get(i) > y.get(i)) {
-				player1WinCount++;
+				wins++;
 				System.out.println("Player 1 wins");
 				break;
 			}
@@ -365,7 +366,6 @@ Part 3: If we look at pokernew.txt instead of poker.txt, how many hands does pla
 				continue;
 			}
 			else {
-				player2WinCount++;
 				System.out.println("Player 2 wins");
 				break;
 			}
@@ -382,6 +382,7 @@ Part 3: If we look at pokernew.txt instead of poker.txt, how many hands does pla
 		int buildValue1 = findValue(a);
 		int buildValue2 = findValue(b);
 		if(buildValue1 > buildValue2) {
+			wins++;
 			System.out.println("Player 1 wins");
 		}
 		else if(buildValue1 == buildValue2) {
